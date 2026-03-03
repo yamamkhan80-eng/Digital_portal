@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
+    <meta name="theme-color" content="#006A4E" />
+    
+    <!-- PWA Manifest and Icons -->
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Government_Seal_of_Bangladesh.svg/1200px-Government_Seal_of_Bangladesh.svg.png" />
+    
+    <title>Family Card Portal - Bangladesh</title>
+
+    <style>
+      /* Extra CSS to prevent zooming on input focus (common in iOS) */
+      input, select, textarea {
+        font-size: 16px !important;
+      }
+      
+      /* Disable double-tap to zoom */
+      body {
+        touch-action: manipulation;
+        overflow-x: hidden;
+        width: 100%;
+        position: relative;
+      }
+    </style>
+    <script>
+      // Aggressively prevent pinch-to-zoom
+      document.addEventListener('touchstart', function (event) {
+        if (event.touches.length > 1) {
+          event.preventDefault();
+        }
+      }, { passive: false });
+
+      let lastTouchEnd = 0;
+      document.addEventListener('touchend', function (event) {
+        let now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) {
+          event.preventDefault();
+        }
+        lastTouchEnd = now;
+      }, false);
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

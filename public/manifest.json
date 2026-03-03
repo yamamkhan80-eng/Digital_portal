@@ -1,0 +1,23 @@
+{
+  "name": "Family Card Digital Portal",
+  "short_name": "Family Card",
+  "description": "Digital application portal for Family Card in Bangladesh.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#006A4E",
+  "theme_color": "#006A4E",
+  "icons": [
+    {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Government_Seal_of_Bangladesh.svg/192x192px-Government_Seal_of_Bangladesh.svg.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Government_Seal_of_Bangladesh.svg/512x512px-Government_Seal_of_Bangladesh.svg.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

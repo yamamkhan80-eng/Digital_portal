@@ -1,0 +1,5 @@
+{
+  "name": "Family Card Digital Application Portal - Bangladesh",
+  "description": "A premium digital application portal for family cards in Bangladesh, featuring application submission, status verification, receipt download, and an admin dashboard.",
+  "requestFramePermissions": ["camera"]
+}

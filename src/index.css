@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "Hind Siliguri", ui-sans-serif, system-ui, sans-serif;
+  --font-bangla: "Hind Siliguri", sans-serif;
+  
+  --color-bd-green: #006A4E;
+  --color-bd-red: #F42A41;
+}
+
+@layer base {
+  html, body {
+    @apply overflow-x-hidden;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    touch-action: pan-y; /* Only allow vertical panning */
+    -webkit-text-size-adjust: 100%;
+    overscroll-behavior: none; /* Prevent pull-to-refresh and bounce */
+  }
+
+  body {
+    @apply font-sans text-slate-900 bg-slate-50;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-xl;
+  }
+  
+  .btn-primary {
+    @apply bg-bd-green text-white px-6 py-3 rounded-xl font-medium shadow-lg shadow-bd-green/20 active:scale-95 transition-all;
+  }
+  
+  .btn-secondary {
+    @apply bg-white text-bd-green border border-bd-green/20 px-6 py-3 rounded-xl font-medium shadow-sm active:scale-95 transition-all;
+  }
+}
+
+/* Disable zoom on mobile */
+@viewport {
+  width: device-width;
+  zoom: 1.0;
+}
