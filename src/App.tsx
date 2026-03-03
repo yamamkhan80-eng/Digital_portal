@@ -178,7 +178,7 @@ const Watermark = () => (
 export default function App() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<UserProfile | null>(null);
-  const [currentPage, setCurrentPage] = useState<'login' | 'home' | 'apply' | 'verify' | 'receipt' | 'notices' | 'profile' | 'settings' | 'admin-login' | 'admin-dashboard' | 'ai-chat' | 'help'>('login');
+  const [currentPage, setCurrentPage] = useState<'login' | 'register' | 'home' | 'apply' | 'verify' | 'receipt' | 'notices' | 'profile' | 'settings' | 'admin-login' | 'admin-dashboard' | 'ai-chat' | 'help'>('login');
   const [selectedApp, setSelectedApp] = useState<Application | null>(null);
   const [notices, setNotices] = useState<Notice[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -243,6 +243,26 @@ export default function App() {
       }
     } catch (err) {
       alert("লগইন করতে সমস্যা হয়েছে।");
+    }
+  };
+
+  const handleRegister = async (name: string, phone: string) => {
+    if (!name || !phone) return alert("সবগুলো তথ্য প্রদান করুন।");
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, phone }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert("নিবন্ধন সফল হয়েছে! এখন লগইন করুন।");
+        setCurrentPage('login');
+      } else {
+        alert(data.error);
+      }
+    } catch (err) {
+      alert("নিবন্ধন করতে সমস্যা হয়েছে।");
     }
   };
 
@@ -335,7 +355,13 @@ export default function App() {
         <AnimatePresence mode="wait">
           {currentPage === 'login' && (
             <PageTransition key="login">
-              <LoginPage onLogin={handleLogin} onCheckStatus={() => setCurrentPage('verify')} />
+              <LoginPage onLogin={handleLogin} onCheckStatus={() => setCurrentPage('verify')} onGoToRegister={() => setCurrentPage('register')} />
+            </PageTransition>
+          )}
+
+          {currentPage === 'register' && (
+            <PageTransition key="register">
+              <RegistrationPage onRegister={handleRegister} onBack={() => setCurrentPage('login')} />
             </PageTransition>
           )}
 
@@ -657,7 +683,7 @@ const MenuButton = ({ icon, label, onClick }: { icon: React.ReactNode, label: st
   </button>
 );
 
-const LoginPage = ({ onLogin, onCheckStatus }: { onLogin: (phone: string) => void, onCheckStatus: () => void }) => {
+const LoginPage = ({ onLogin, onCheckStatus, onGoToRegister }: { onLogin: (phone: string) => void, onCheckStatus: () => void, onGoToRegister: () => void }) => {
   const [phone, setPhone] = useState("");
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-br from-bd-green/5 to-emerald-50">
@@ -695,6 +721,12 @@ const LoginPage = ({ onLogin, onCheckStatus }: { onLogin: (phone: string) => voi
             প্রবেশ করুন
           </button>
           
+          <div className="text-center">
+            <p className="text-sm text-slate-500 font-bangla">
+              অ্যাকাউন্ট নেই? <button onClick={onGoToRegister} className="text-bd-green font-bold hover:underline">নতুন নিবন্ধন করুন</button>
+            </p>
+          </div>
+          
           <div className="relative py-2">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-slate-200"></div>
@@ -709,6 +741,70 @@ const LoginPage = ({ onLogin, onCheckStatus }: { onLogin: (phone: string) => voi
             className="w-full py-4 bg-white border-2 border-bd-green text-bd-green rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-bd-green/5 transition-colors font-bangla"
           >
             <Search size={20} /> আবেদন যাচাই করুন
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const RegistrationPage = ({ onRegister, onBack }: { onRegister: (name: string, phone: string) => void, onBack: () => void }) => {
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-br from-bd-green/5 to-emerald-50">
+      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-xl mb-8 border-2 border-bd-green/20">
+        <img 
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Government_Seal_of_Bangladesh.svg/1200px-Government_Seal_of_Bangladesh.svg.png" 
+          alt="Logo" 
+          className="w-14 h-14 object-contain"
+          referrerPolicy="no-referrer"
+        />
+      </div>
+      <div className="glass-card p-8 rounded-[40px] w-full max-w-sm space-y-6">
+        <div className="text-center space-y-2">
+          <h2 className="text-2xl font-bold text-slate-800 font-bangla">নতুন নিবন্ধন</h2>
+          <p className="text-sm text-slate-400 font-bangla">আপনার তথ্য দিয়ে অ্যাকাউন্ট তৈরি করুন</p>
+        </div>
+        <div className="space-y-4">
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-slate-400 ml-1 uppercase font-bangla">পূর্ণ নাম</label>
+            <div className="relative">
+              <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
+              <input 
+                type="text"
+                placeholder="আপনার নাম লিখুন"
+                className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 outline-none focus:ring-2 focus:ring-bd-green/20 font-bold font-bangla"
+                value={name}
+                onChange={e => setName(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-slate-400 ml-1 uppercase font-bangla">মোবাইল নম্বর</label>
+            <div className="relative">
+              <Smartphone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
+              <input 
+                type="tel"
+                placeholder="01XXXXXXXXX"
+                className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 outline-none focus:ring-2 focus:ring-bd-green/20 font-bold"
+                value={phone}
+                onChange={e => setPhone(e.target.value)}
+              />
+            </div>
+          </div>
+          <button 
+            onClick={() => onRegister(name, phone)}
+            className="w-full btn-primary py-4 text-lg font-bangla"
+          >
+            নিবন্ধন করুন
+          </button>
+          
+          <button 
+            onClick={onBack}
+            className="w-full py-2 text-sm text-slate-500 font-bold hover:text-bd-green transition-colors font-bangla"
+          >
+            ফিরে যান
           </button>
         </div>
       </div>

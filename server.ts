@@ -113,6 +113,25 @@ async function startServer() {
   const PORT = 3000;
 
   // API Routes
+  app.post("/api/register", (req, res) => {
+    const { phone, name } = req.body;
+    if (!phone || !name) {
+      return res.status(400).json({ error: "নাম এবং মোবাইল নম্বর প্রয়োজন।" });
+    }
+    
+    const existing = db.prepare("SELECT phone FROM users WHERE phone = ?").get(phone);
+    if (existing) {
+      return res.status(400).json({ error: "এই মোবাইল নম্বরটি ইতিমধ্যে নিবন্ধিত।" });
+    }
+
+    try {
+      db.prepare("INSERT INTO users (phone, name) VALUES (?, ?)").run(phone, name);
+      res.json({ phone, name, enabled: 1 });
+    } catch (error) {
+      res.status(500).json({ error: "নিবন্ধন করতে সমস্যা হয়েছে।" });
+    }
+  });
+
   app.post("/api/login", (req, res) => {
     const { phone } = req.body;
     if (!phone) return res.status(400).json({ error: "মোবাইল নম্বর প্রয়োজন।" });
